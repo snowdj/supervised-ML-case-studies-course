@@ -1,18 +1,17 @@
-library(caret)
-library(tidyverse)
-library(yardstick)
+library(tidymodels)
 
-car_test <- readRDS("data/c1_testing_full.rds")
+car_test <- readRDS("data/c1_test.rds")
 fit_lm <- readRDS("data/c1_fit_lm.rds")
 fit_rf <- readRDS("data/c1_fit_rf.rds")
 
 # Create the new columns
 results <- ___ %>%
-    mutate(MPG = log(MPG),
-           `Linear regression` = predict(fit_lm, ___),
-           `Random forest` = predict(fit_rf, ___))
+    mutate(mpg = log(mpg)) %>%
+    bind_cols(predict(fit_lm, ___) %>%
+                  rename(.pred_lm = .pred)) %>%
+    bind_cols(predict(fit_rf, ___) %>%
+                  rename(.pred_rf = .pred))
 
 # Evaluate the performance
-metrics(results, truth = MPG, estimate = `Linear regression`)
-metrics(results, truth = MPG, estimate = `Random forest`)
-
+metrics(results, truth = mpg, estimate = .pred_lm)
+metrics(results, truth = mpg, estimate = .pred_rf)
